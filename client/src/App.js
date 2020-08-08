@@ -14,6 +14,7 @@ import TableBody from '@material-ui/core/TableBody';
 //css 불러오기
 import { withStyles } from '@material-ui/core/styles';
 
+//표형태를 유지하며 스크롤바 생기게 하기
 const styles = theme => ({
   root: {
     width: "100%",
