@@ -2,20 +2,43 @@ import React, { Component } from 'react';
 //import logo from './logo.svg';
 import Customer from './components/Customer';
 import './App.css';
+import imgA from './images/sara001.jpg';
+import imgB from './images/sara002.jpg';
+//6강 Material Ui 적용
+import Paper from '@material-ui/core/Paper'; //외부를 감싸기위해 사용하는 컴포넌트
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
+//css 불러오기
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  root: {
+    width: "100%",
+    marginTop: theme.spacing.unit *3,
+    overFlowX: "auto"
+  },
+  table: {
+    minWidth: 1000
+  }
+})
 
 //customer라는 const에 데이터담기
 const customers = [
 {
   'id':1,
-  'image': 'https://paceimg.com/64/64/any',
+  'image': imgA,
   'name': '홍길동',
   'birthday': '961222',
   'gender': '남자',
   'job': '대학생'
 },
+//TODO 깃에 올리기전에 사진은 지우기
 {
   'id':2,
-  'image': 'https://paceimg.com/64/64/any',
+  'image': imgA,
   'name': '이성준',
   'birthday': '910317',
   'gender': '남자',
@@ -23,69 +46,55 @@ const customers = [
 },
 {
   'id':3,
-  'image': 'https://paceimg.com/64/64/any',
+  'image': imgB,
   'name': '김사라',
   'birthday': '911125',
   'gender': '여자',
   'job': '천상여자'
 }
 ]
+
+/**
+ * 1~5강 Component
+ */
 class App extends Component {
   render() {
+    //classes 라는 변수 선언하여 위에서 정의한거 가져옴
+    const { classes } = this.props;
     return (
-      //들어가는 요소가많기때문에 div로 감쌈
-      <div>
-        {
-          //배열을 map으로 받을 수 있음
-          //각 원소를 c로 순회하겠다는 arrow function
-          customers.map(c => {
-            return (
-              <Customer
+      <Paper className={classes.root}>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell>번호</TableCell>
+              <TableCell>이미지</TableCell>
+              <TableCell>이름</TableCell>
+              <TableCell>생년월일</TableCell>
+              <TableCell>성별</TableCell>
+              <TableCell>직업</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          {customers.map(c => { return ( <Customer
                 //map은 key라는 이름의 props를 사용하여 설정해줘야함 (pk같은 값을 잡아주면 좋음)
                 key={c.id}
                 id={c.id}
                 image={c.image}
                 name={c.name}
-                birthday={c.name}
+                birthday={c.birthday}
                 gender={c.gender}
                 job={c.job}
               />
-            );
-          })
-        }
-        
-      {/* 아래 배열형식 대신 맵을 사용할수도있음 (위쪽)
-      ==========================
-      //Customer에 props를 통해 전달
-      <Customer
-        id={customers[0].id}
-        img={customers[0].image}
-        name={customers[0].name}
-        birthday={customers[0].birthday}
-        gender={customers[0].gender}
-        job={customers[0].job}
-      />
-      <Customer
-        id={customers[1].id}
-        img={customers[1].image}
-        name={customers[1].name}
-        birthday={customers[1].birthday}
-        gender={customers[1].gender}
-        job={customers[1].job}
-      />
-      <Customer
-        id={customers[2].id}
-        img={customers[2].image}
-        name={customers[2].name}
-        birthday={customers[2].birthday}
-        gender={customers[2].gender}
-        job={customers[2].job}
-      /> 
-      */}
-      </div>
-    );
+              )
+            }
+          )};      
+          </TableBody>
+        </Table>
+      </Paper>
+    )
   }
 }
+
 
 // function App() {
 //   return (
@@ -96,4 +105,4 @@ class App extends Component {
 //   );
 // }
 
-export default App;
+export default withStyles(styles)(App);

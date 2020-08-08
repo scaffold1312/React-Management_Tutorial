@@ -1,3 +1,11 @@
 .gray-background {
   background: darkgray;
 }
+/**
+* 사진전용 크기제한하기
+*/
+.max-small {
+    width: auto; height: auto;
+    max-width: 60px;
+    max-height: 60px;
+}
