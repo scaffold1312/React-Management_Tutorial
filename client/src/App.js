@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 //import logo from './logo.svg';
 import Customer from './components/Customer';
 import './App.css';
-import imgA from './images/sara001.jpg';
-import imgB from './images/sara002.jpg';
+// import imgA from './images/sara001.jpg';
+// import imgB from './images/sara002.jpg';
 //6강 Material Ui 적용
 import Paper from '@material-ui/core/Paper'; //외부를 감싸기위해 사용하는 컴포넌트
 import Table from '@material-ui/core/Table';
@@ -27,38 +27,61 @@ const styles = theme => ({
 })
 
 //customer라는 const에 데이터담기
-const customers = [
-{
-  'id':1,
-  'image': imgA,
-  'name': '홍길동',
-  'birthday': '961222',
-  'gender': '남자',
-  'job': '대학생'
-},
-//TODO 깃에 올리기전에 사진은 지우기
-{
-  'id':2,
-  'image': imgA,
-  'name': '이성준',
-  'birthday': '910317',
-  'gender': '남자',
-  'job': '웹개발자'
-},
-{
-  'id':3,
-  'image': imgB,
-  'name': '김사라',
-  'birthday': '911125',
-  'gender': '여자',
-  'job': '천상여자'
-}
-]
+// const customers = [
+// {
+//   'id':1,
+//   'image': imgA,
+//   'name': '홍길동',
+//   'birthday': '961222',
+//   'gender': '남자',
+//   'job': '대학생'
+// },
+// //TODO 깃에 올리기전에 사진은 지우기
+// {
+//   'id':2,
+//   'image': imgA,
+//   'name': '이성준',
+//   'birthday': '910317',
+//   'gender': '남자',
+//   'job': '웹개발자'
+// },
+// {
+//   'id':3,
+//   'image': imgB,
+//   'name': '김사라',
+//   'birthday': '911125',
+//   'gender': '여자',
+//   'job': '천상여자'
+// }
+// ]
 
 /**
  * 1~5강 Component
  */
 class App extends Component {
+
+  //변경
+  state = {
+    customer: ""
+  }
+  
+  //실제로 api 서버에 접근을 하여 데이터를 받아오는 등의 작업을 하는곳
+  //마운트가 완료되었을 때 해주는 작업
+  componentDidMount() {
+    //callApi 를 불러와서 customers라는 변수에 res를 담는다?
+    this.callApi()
+      .then(res => this.setState({customers: res}))
+      .catch(err => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+
+  //props는 변경될 수 없는 데이터
+  //state 변경될 수 있는 데이터
   render() {
     //classes 라는 변수 선언하여 위에서 정의한거 가져옴
     const { classes } = this.props;
@@ -76,7 +99,7 @@ class App extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-          {customers.map(c => { return ( <Customer
+          {this.state.customers ? this.state.customers.map(c => { return ( <Customer
                 //map은 key라는 이름의 props를 사용하여 설정해줘야함 (pk같은 값을 잡아주면 좋음)
                 key={c.id}
                 id={c.id}
@@ -88,7 +111,7 @@ class App extends Component {
               />
               )
             }
-          )};      
+          ) : "" }     
           </TableBody>
         </Table>
       </Paper>
