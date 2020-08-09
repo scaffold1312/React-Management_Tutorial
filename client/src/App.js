@@ -11,6 +11,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
+//로딩바
+import CircularProgress from "@material-ui/core/CircularProgress";
 //css 불러오기
 import { withStyles } from '@material-ui/core/styles';
 
@@ -18,11 +20,14 @@ import { withStyles } from '@material-ui/core/styles';
 const styles = theme => ({
   root: {
     width: "100%",
-    marginTop: theme.spacing.unit *3,
+    marginTop: theme.spacing.unit * 3,
     overFlowX: "auto"
   },
   table: {
     minWidth: 1000
+  },
+  progress: {
+    margin: theme.spacing.unit * 2
   }
 })
 
@@ -56,28 +61,53 @@ const styles = theme => ({
 // ]
 
 /**
- * 1~5강 Component
+ * 1) constructor()
+ * 
+ * 2) componentWillMount()
+ * 
+ * 3) render()
+ * 
+ * 4) componentDidMount()
+ * 
+ * props or state => shouldComponentUpdate()
+ * 
+ * 리엑트 component 는 화면의 변경을 감지해서 알아서 반영해주기때문에 상태만 잘 관리해주면됨
+ * 
  */
 class App extends Component {
 
   //변경
   state = {
-    customer: ""
+    customer: "",
+    //이 변수를 통해 로딩바의 완성도를 줌
+    completed: 0
   }
   
   //실제로 api 서버에 접근을 하여 데이터를 받아오는 등의 작업을 하는곳
-  //마운트가 완료되었을 때 해주는 작업
+  //마운트가 완료되었을 때 해주는 작업 (아래에 정의해둔 기능을 가져와서 사용함)
   componentDidMount() {
+
+    //0.02초마다 progress함수가 실행되도록 실행
+    this.timer = setInterval(this.progress, 20);
+
     //callApi 를 불러와서 customers라는 변수에 res를 담는다?
     this.callApi()
       .then(res => this.setState({customers: res}))
       .catch(err => console.log(err));
   }
 
+  //API를 CALL하여 JSON데이터를 담아줌
   callApi = async () => {
     const response = await fetch('/api/customers');
     const body = await response.json();
     return body;
+  }
+
+  //로딩바 PROGRESS 설정
+  progress = () => {
+    const { completed } = this.state;
+    //completed가 100이 되는순간 0으로 줄어들고 그렇지 않으면 1씩 증가
+    this.setState({ completed: completed >= 100 ? 0 : completed + 1});
   }
 
   //props는 변경될 수 없는 데이터
@@ -111,22 +141,18 @@ class App extends Component {
               />
               )
             }
-          ) : "" }     
+          ) :
+            <TableRow>
+              <TableCell colSpan="6" align="center">
+                <CircularProgress className={classes.progress} variant="determinate" value={this.state.completed} />
+              </TableCell>
+            </TableRow>
+          }     
           </TableBody>
         </Table>
       </Paper>
     )
   }
 }
-
-
-// function App() {
-//   return (
-//     <div className="gray-background">
-//       <img src={logo} lat="logo" />
-//       <h2>Let's develop management system!</h2>
-//     </div>
-//   );
-// }
 
 export default withStyles(styles)(App);
